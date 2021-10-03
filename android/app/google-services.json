@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "456442380104",
+    "project_id": "udemychatapp-firebase",
+    "storage_bucket": "udemychatapp-firebase.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:456442380104:android:d96dab1d07009e335d3d7d",
+        "android_client_info": {
+          "package_name": "com.example.udemychatapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "456442380104-vjjvemf3f81kg742upn6rfhc4o6ii1ip.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDyWqSJDVdKCWhtmV-Cdk0TXHqrA0GKBAI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "456442380104-vjjvemf3f81kg742upn6rfhc4o6ii1ip.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
