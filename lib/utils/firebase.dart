@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:udemychatapp/model/user.dart';
+import 'package:udemychatapp/utils/shared_prefs.dart';
 
 class Firestore {
   static FirebaseFirestore _firestoreInstance = FirebaseFirestore.instance;
@@ -12,6 +14,7 @@ class Firestore {
       'image_path': 'https://pbs.twimg.com/media/E-bTP7DVcAMLKh0.jpg'
     });
     print('アカウント作成完了');
+    await SharedPrefs.setUid(newDoc.id);
 
     List<String> userIds = await getUser();
     userIds.forEach((user) async{
@@ -41,6 +44,17 @@ class Firestore {
       print('取得失敗 --- &e');
       return [];
     }
+  }
+
+  static Future<User> getProfile(String uid) async{
+    final profile = await userRef.doc(uid).get();
+    User myProfile = User(
+      name:  profile.data()?['name'],
+      uid: uid,
+      imagePath: profile.data()?['image_path'],
+      lastMessage: ''
+    );
+    return myProfile;
   }
 }
 
