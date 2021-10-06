@@ -7,16 +7,17 @@ class Firestore {
   static FirebaseFirestore _firestoreInstance = FirebaseFirestore.instance;
   static final userRef = _firestoreInstance.collection('user');
   static final roomRef = _firestoreInstance.collection('room');
+  static final roomSnapshot = roomRef.snapshots();
 
+  // 新規アカウント作成,新規ルーム作成
   static Future<void> addUser() async{
     try {
       final newDoc = await userRef.add({
       'name': '名無し',
       'image_path': 'https://pbs.twimg.com/media/E-bTP7DVcAMLKh0.jpg'
     });
-    print('アカウント作成完了');
     await SharedPrefs.setUid(newDoc.id);
-
+    print('アカウント作成完了');
     List<String> userIds = await getUser();
     userIds.forEach((user) async{
       if(user != newDoc.id) {
@@ -32,6 +33,7 @@ class Firestore {
     }
   }
 
+  // 全ユーザ情報取得(サブ)
   static Future<List<String>> getUser() async {
     try {
       final snapshot = await userRef.get();
@@ -46,6 +48,7 @@ class Firestore {
     }
   }
 
+  // 相手ユーザ情報取得(サブ)
   static Future<User> getProfile(String uid) async{
     final profile = await userRef.doc(uid).get();
     User myProfile = User(
@@ -56,6 +59,7 @@ class Firestore {
     return myProfile;
   }
 
+  // 既存ルーム情報取得
   static Future<List<TalkRoom>> getRooms(String myUid) async {
     final snapshot = await roomRef.get();
     List<TalkRoom> roomList = [];

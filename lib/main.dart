@@ -16,8 +16,6 @@ Future<void> checkAccount() async{
   String uid = SharedPrefs.getUid();
   if(uid == '') {
     Firestore.addUser();
-  } else {
-    Firestore.getRooms(uid);
   }
 }
 
