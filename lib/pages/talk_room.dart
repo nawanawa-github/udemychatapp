@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:udemychatapp/model/message.dart';
 
-class TalkRoom extends StatefulWidget {
+class TalkRoomPage extends StatefulWidget {
   final String name;
-  TalkRoom(this.name);
+  TalkRoomPage(this.name);
   @override
-  _TalkRoomState createState() => _TalkRoomState();
+  _TalkRoomPageState createState() => _TalkRoomPageState();
 }
 
-class _TalkRoomState extends State<TalkRoom> {
+class _TalkRoomPageState extends State<TalkRoomPage> {
   List<Message> messageList = [
     Message(
       message: 'あいうあいうえおあいうえおあいうえおあいうえおあいうえおあいうえおあいうえおあいうえおあいうえおあいうえおあいうえおあいうえおあいうえおあいうえおあいうえおあいうえおあいうえおあいうえおあいうえおえお',

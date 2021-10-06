@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:udemychatapp/utils/shared_prefs.dart';
 import 'package:udemychatapp/model/talk_room.dart';
 import 'package:udemychatapp/model/user.dart';
-import 'package:udemychatapp/utils/shared_prefs.dart';
 
 class Firestore {
   static FirebaseFirestore _firestoreInstance = FirebaseFirestore.instance;
