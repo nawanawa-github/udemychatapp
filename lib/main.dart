@@ -8,9 +8,17 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await SharedPrefs.setInstance();
-  String uid = SharedPrefs.getUid();
-  if(uid == '') Firestore.addUser();
+  checkAccount();
   runApp(MyApp());
+}
+
+Future<void> checkAccount() async{
+  String uid = SharedPrefs.getUid();
+  if(uid == '') {
+    Firestore.addUser();
+  } else {
+    Firestore.getRooms(uid);
+  }
 }
 
 class MyApp extends StatelessWidget {

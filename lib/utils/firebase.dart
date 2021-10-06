@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:udemychatapp/model/talk_room.dart';
 import 'package:udemychatapp/model/user.dart';
 import 'package:udemychatapp/utils/shared_prefs.dart';
 
@@ -37,7 +38,6 @@ class Firestore {
       List<String> userIds = [];
       snapshot.docs.forEach((user) {
         userIds.add(user.id);
-        print('ドキュメント: ${user.id} --- 名前: ${user.data()['name']}' );
       });
       return userIds;
     } catch(e) {
@@ -52,9 +52,33 @@ class Firestore {
       name:  profile.data()?['name'],
       uid: uid,
       imagePath: profile.data()?['image_path'],
-      lastMessage: ''
     );
     return myProfile;
+  }
+
+  static Future<List<TalkRoom>> getRooms(String myUid) async {
+    final snapshot = await roomRef.get();
+    List<TalkRoom> roomList = [];
+    await Future.forEach(snapshot.docs, (QueryDocumentSnapshot<Map<String, dynamic>> doc) async {
+      if(doc.data()['joined_user_ids'].contains(myUid)) {
+        String yourUid ='';
+        doc.data()['joined_user_ids'].forEach((id) {
+          if(id != myUid) {
+            yourUid = id;
+            return;
+          }
+        });
+        User yourProfile = await getProfile(yourUid);
+        TalkRoom room = TalkRoom(
+          roomId:  doc.id,
+          talkUser: yourProfile,
+          lastMessage: doc.data()['last_message'] ?? '',
+        );
+        roomList.add(room);
+      }
+    });
+    print('room情報取得完了');
+    return roomList;
   }
 }
 
