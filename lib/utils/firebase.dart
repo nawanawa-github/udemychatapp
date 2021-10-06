@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:udemychatapp/utils/shared_prefs.dart';
 import 'package:udemychatapp/model/talk_room.dart';
 import 'package:udemychatapp/model/user.dart';
+import 'package:udemychatapp/model/message.dart';
 
 class Firestore {
   static FirebaseFirestore _firestoreInstance = FirebaseFirestore.instance;
@@ -59,7 +60,7 @@ class Firestore {
     return myProfile;
   }
 
-  // 既存ルーム情報取得
+  // ルーム情報取得
   static Future<List<TalkRoom>> getRooms(String myUid) async {
     final snapshot = await roomRef.get();
     List<TalkRoom> roomList = [];
@@ -84,5 +85,28 @@ class Firestore {
     print('room情報取得完了');
     return roomList;
   }
-}
 
+  //トークメッセージ情報取得
+  static Future<List<Message>> getMessages(String roomId) async{
+    final messageRef = roomRef.doc(roomId).collection('message');
+    List<Message> messageList = [];
+    final snapshot = await messageRef.get();
+    await Future.forEach(snapshot.docs, (QueryDocumentSnapshot<Map<String, dynamic>> doc) {
+      bool isMe;
+      String myUid = SharedPrefs.getUid();
+      if(doc.data()['sender_id'] == myUid) {
+        isMe = true;
+      } else {
+        isMe = false;
+      }
+      Message message = Message(
+        message: doc.data()['message'],
+        isMe: isMe,
+        sendTime: doc.data()['send_time'],
+      );
+      messageList.add(message);
+    });
+    print('トークルームメッセージ取得完了');
+    return messageList;
+  }
+}
