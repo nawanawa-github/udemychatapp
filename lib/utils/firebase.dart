@@ -8,6 +8,7 @@ class Firestore {
   static FirebaseFirestore _firestoreInstance = FirebaseFirestore.instance;
   static final userRef = _firestoreInstance.collection('user');
   static final roomRef = _firestoreInstance.collection('room');
+  //ルームコレクション更新によるsnapshot
   static final roomSnapshot = roomRef.snapshots();
 
   // 新規アカウント作成,新規ルーム作成
@@ -60,7 +61,7 @@ class Firestore {
     return myProfile;
   }
 
-  // ルーム情報取得
+  // ルーム一覧情報取得
   static Future<List<TalkRoom>> getRooms(String myUid) async {
     final snapshot = await roomRef.get();
     List<TalkRoom> roomList = [];
@@ -82,7 +83,7 @@ class Firestore {
         roomList.add(room);
       }
     });
-    print('room情報取得完了');
+    print('ルーム一覧情報取得完了');
     return roomList;
   }
 
@@ -91,7 +92,7 @@ class Firestore {
     final messageRef = roomRef.doc(roomId).collection('message');
     List<Message> messageList = [];
     final snapshot = await messageRef.get();
-    await Future.forEach(snapshot.docs, (QueryDocumentSnapshot<Map<String, dynamic>> doc) {
+    await Future.forEach(snapshot.docs, (QueryDocumentSnapshot<dynamic> doc) {
       bool isMe;
       String myUid = SharedPrefs.getUid();
       if(doc.data()['sender_id'] == myUid) {
@@ -100,13 +101,30 @@ class Firestore {
         isMe = false;
       }
       Message message = Message(
-        message: doc.data()['message'],
+        message: doc.data()['message']  ?? '',
         isMe: isMe,
-        sendTime: doc.data()['send_time'],
+        sendTime: doc.data()['send_time'] ?? Timestamp.now(),
       );
       messageList.add(message);
     });
+    messageList.sort((a,b) => b.sendTime.compareTo(a.sendTime));
     print('トークルームメッセージ取得完了');
     return messageList;
+  }
+
+  //メッセージをデータベース追加処理
+  static Future<void> sendMessage(String roomId, String message) async{
+    final messageRef = roomRef.doc(roomId).collection('message');
+    String myUid = SharedPrefs.getUid();
+    await messageRef.add({
+      'message': message,
+      'sender_id': myUid,
+      'send_time': Timestamp.now(),
+    });
+  }
+
+  //メッセージコレクション更新によるsnapshot
+  static Stream<QuerySnapshot> messageSnapshot(String roomId) {
+    return roomRef.doc(roomId).collection('message').snapshots();
   }
 }
