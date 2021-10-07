@@ -121,6 +121,10 @@ class Firestore {
       'sender_id': myUid,
       'send_time': Timestamp.now(),
     });
+
+    roomRef.doc(roomId).update({
+      'last_message': message,
+    });
   }
 
   //メッセージコレクション更新によるsnapshot
