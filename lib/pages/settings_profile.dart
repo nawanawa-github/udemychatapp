@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 
 class SettingsProfilePage extends StatefulWidget {
@@ -11,19 +12,26 @@ class _SettingsProfilePageState extends State<SettingsProfilePage> {
   File? image;
   ImagePicker picker = ImagePicker();
 
-
-
   Future<void> getInamgeFormGallery() async{
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if(pickedFile != null) {
       image = File(pickedFile.path);
-      print(image);
-      setState(() {
-
-      });
+      uploadImage();
+      setState(() {});
     }
   }
 
+  Future<String> uploadImage() async{
+    final ref = FirebaseStorage.instance.ref('sample');
+    final storedImage = await ref.putFile(image!);
+    String imagePath = await loadImage(storedImage);
+    return imagePath;
+  }
+
+  Future<String> loadImage(TaskSnapshot storedImage) async{
+    String downloadUrl = await storedImage.ref.getDownloadURL();
+    return downloadUrl;
+  }
 
   @override
   Widget build(BuildContext context) {
