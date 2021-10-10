@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 class SettingsProfilePage extends StatefulWidget {
  @override
@@ -6,6 +8,23 @@ class SettingsProfilePage extends StatefulWidget {
 }
 
 class _SettingsProfilePageState extends State<SettingsProfilePage> {
+  File? image;
+  ImagePicker picker = ImagePicker();
+
+
+
+  Future<void> getInamgeFormGallery() async{
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if(pickedFile != null) {
+      image = File(pickedFile.path);
+      print(image);
+      setState(() {
+
+      });
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +54,7 @@ class _SettingsProfilePageState extends State<SettingsProfilePage> {
                       width: 150, height: 40,
                       child: ElevatedButton(
                         onPressed: () {
-                  
+                          getInamgeFormGallery();
                         },
                         child: Text('画像を選択'),
                       ),
@@ -43,7 +62,14 @@ class _SettingsProfilePageState extends State<SettingsProfilePage> {
                   ),
                 ),
               ],
-            )
+            ),
+            SizedBox(height:  30,),
+            image == null ? Container() : Container(
+              width: 200,
+              height: 200,
+              child:  Image.file(image!, fit: BoxFit.cover),
+            ),
+
           ],
         ),
       ),
